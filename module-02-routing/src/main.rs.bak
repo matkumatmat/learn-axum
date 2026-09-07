@@ -1,0 +1,128 @@
+
+// //! # Module 02: Routing Deep Dive
+// //!
+// //! This module covers everything about routing in Axum 0.8:
+// //! - Path parameters with NEW `/{param}` syntax
+// //! - Wildcard routes with `/{*rest}`
+// //! - Query parameters
+// //! - Router nesting and merging
+// //! - Method routing (GET, POST, PUT, DELETE, etc.)
+
+// mod mainc;
+
+// use axum::{
+//     extract::{Path, Query},
+//     routing::{delete, get, patch, post, put},
+//     Router,
+// };
+// use serde::Deserialize;
+
+// // ============================================================================
+// // LESSON 1: Path Parameters - NEW SYNTAX IN AXUM 0.8!
+// // ============================================================================
+
+
+// // ============================================================================
+// // LESSON 2: Wildcard Routes - NEW SYNTAX!
+// // ============================================================================
+
+// // ============================================================================
+// // LESSON 3: Query Parameters
+// // ============================================================================
+
+
+// // ============================================================================
+// // LESSON 4: HTTP Methods
+// // ============================================================================
+
+// // ============================================================================
+// // LESSON 5: Router Nesting
+// // ============================================================================
+
+// // ============================================================================
+// // LESSON 6: Router Merging
+// // ============================================================================
+
+// // ============================================================================
+// // LESSON 7: Fallback Routes
+// // ============================================================================
+
+// async fn not_found() -> (axum::http::StatusCode, &'static str) {
+//     (axum::http::StatusCode::NOT_FOUND, "404 - Route not found")
+// }
+
+// // ============================================================================
+// // MAIN: Putting It All Together
+// // ============================================================================
+
+// #[tokio::main]
+// async fn main() {
+//     let app = Router::new()
+//         // Basic routes
+//         .route("/", get(|| async { "Welcome to the Routing Module!" }))
+//         // ===== HTTP METHODS DEMO =====
+//         // Each method demonstrated with a standalone route
+//         .route("/resource", get(|| async { "GET - Read resource" }))
+//         .route("/resource", post(|| async { "POST - Create resource" }))
+//         .route(
+//             "/resource/{id}",
+//             get(|Path(id): Path<u64>| async move { format!("GET - Read resource {}", id) }),
+//         )
+//         .route(
+//             "/resource/{id}",
+//             put(|Path(id): Path<u64>| async move { format!("PUT - Full update resource {}", id) }),
+//         )
+//         .route(
+//             "/resource/{id}",
+//             patch(|Path(id): Path<u64>| async move {
+//                 format!("PATCH - Partial update resource {}", id)
+//             }),
+//         )
+//         .route(
+//             "/resource/{id}",
+//             delete(|Path(id): Path<u64>| async move { format!("DELETE - Remove resource {}", id) }),
+//         )
+//         // Path parameters (new syntax!)
+//         .route("/users/{id}/posts/{post_id}", get(get_user_post))
+//         .route(
+//             "/users/{user_id}/posts/{post_id}/comments/{comment_id}",
+//             get(get_comment),
+//         )
+//         // Wildcard route (must come after specific routes)
+//         .route("/files/{*path}", get(files))
+//         // Query parameters
+//         .route("/items", get(list_items))
+//         .route("/search", get(search))
+//         // Nested routers - creates /api/v1/users, /api/v1/posts, etc.
+//         .nest("/api/v1", api_v1_routes())
+//         .nest("/api/v2", api_v2_routes())
+//         // Fallback for unmatched routes
+//         .fallback(not_found);
+
+//     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
+//         .await
+//         .expect("Failed to bind to port 3000");
+
+//     println!("🚀 Module 02: Routing Deep Dive");
+//     println!("   Server running on http://localhost:3000");
+//     println!();
+//     println!("📝 HTTP Methods Demo:");
+//     println!("   GET    /resource      - Read all");
+//     println!("   POST   /resource      - Create new");
+//     println!("   GET    /resource/123  - Read one");
+//     println!("   PUT    /resource/123  - Full update");
+//     println!("   PATCH  /resource/123  - Partial update");
+//     println!("   DELETE /resource/123  - Remove");
+//     println!();
+//     println!("📝 Path Parameters (NEW SYNTAX!):");
+//     println!("   GET /users/123/posts/456");
+//     println!("   GET /files/docs/readme.md");
+//     println!();
+//     println!("📝 Nested Routes:");
+//     println!("   GET  /api/v1/users");
+//     println!("   POST /api/v1/users");
+//     println!("   PUT  /api/v1/users/123");
+
+//     axum::serve(listener, app).await.expect("Server failed");
+// }
+
