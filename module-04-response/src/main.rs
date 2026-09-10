@@ -1,36 +1,33 @@
-//! # Module 04: Response Types
-//!
-//! Learn how to return different types of responses in Axum:
-//! - Simple types (String, &str)
-//! - JSON responses
-//! - HTML responses  
-//! - Custom response types
-//! - Status codes and headers
-//! - The IntoResponse trait
+// responses
+// 1. simple types ( String, &str)
+// 2. Json Response
+// 3. HTML Response
+// 4. Custom Response type
+// 5. Status code and headers
+// 6. intoresponse trait
+mod tests;
 
 use axum::{
+    Router,
     body::Body,
-    http::{header, HeaderMap, HeaderValue, StatusCode},
+    http::{HeaderMap, HeaderValue, StatusCode, header},
     response::{Html, IntoResponse, Json, Redirect, Response},
     routing::get,
-    Router,
 };
 use serde::Serialize;
+use std::net::SocketAddr;
 
-// ============================================================================
-// LESSON 1: Simple Response Types
-// ============================================================================
-
-/// Returning a &'static str
-async fn static_string() -> &'static str {
-    "Hello from static string!"
+//simple response types
+async fn stc_str() -> &'static str {
+    "Hello World!"
 }
 
-/// Returning an owned String
-async fn owned_string() -> String {
-    format!("Hello at timestamp: {}", chrono_lite())
+// ngembaliin owned string
+async fn own_str() -> String {
+    format!("Hello World on timestamp: {}", chrono_lite())
 }
 
+//helper chrono_lite()
 fn chrono_lite() -> u64 {
     std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
@@ -38,15 +35,12 @@ fn chrono_lite() -> u64 {
         .as_secs()
 }
 
-/// Returning a tuple with status code
-async fn with_status() -> (StatusCode, &'static str) {
-    (StatusCode::CREATED, "Resource created successfully!")
+// tuple status code
+async fn w_status() -> (StatusCode, &'static str) {
+    (StatusCode::CREATED, "Created Succeded")
 }
 
-// ============================================================================
-// LESSON 2: JSON Responses
-// ============================================================================
-
+// Json Response
 #[derive(Serialize)]
 struct User {
     id: u64,
@@ -55,48 +49,47 @@ struct User {
     active: bool,
 }
 
-async fn json_user() -> Json<User> {
+async fn active_user() -> Json<User> {
     Json(User {
         id: 1,
-        name: "John Doe".to_string(),
-        email: "john@example.com".to_string(),
+        name: "paritiw wiw wiw".to_string(),
+        email: "paritiw@piwpiw".to_string(),
         active: true,
     })
 }
 
-/// Returning a list of users
 #[derive(Serialize)]
-struct UsersResponse {
+struct UserResp {
     users: Vec<User>,
     total: usize,
     page: u32,
 }
 
-async fn json_users() -> Json<UsersResponse> {
+async fn json_users() -> Json<UserResp> {
     let users = vec![
         User {
             id: 1,
-            name: "John".to_string(),
-            email: "john@example.com".to_string(),
-            active: true,
+            name: "a".to_string(),
+            email: "mail@1".to_string(),
+            active: false,
         },
         User {
             id: 2,
-            name: "Jane".to_string(),
-            email: "jane@example.com".to_string(),
+            name: "b".to_string(),
+            email: "mail@2".to_string(),
             active: true,
         },
     ];
     let total = users.len();
-    Json(UsersResponse {
+    Json(UserResp {
         users,
         total,
         page: 1,
     })
 }
 
-/// JSON with custom status code
-async fn json_with_status() -> (StatusCode, Json<User>) {
+// json demgan custom status code
+async fn json_user_status() -> (StatusCode, Json<User>) {
     (
         StatusCode::CREATED,
         Json(User {
@@ -108,43 +101,13 @@ async fn json_with_status() -> (StatusCode, Json<User>) {
     )
 }
 
-// ============================================================================
-// LESSON 3: HTML Responses
-// ============================================================================
-
-async fn html_page() -> Html<&'static str> {
+// static html doc file
+async fn static_html() -> Html<&'static str> {
     Html(
         r#"
         <!DOCTYPE html>
         <html>
-        <head>
-            <title>Axum HTML Response</title>
-            <style>
-                body {
-                    font-family: system-ui, sans-serif;
-                    max-width: 800px;
-                    margin: 50px auto;
-                    padding: 20px;
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    min-height: 100vh;
-                }
-                .card {
-                    background: white;
-                    border-radius: 12px;
-                    padding: 30px;
-                    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-                }
-                h1 { color: #333; }
-                p { color: #666; line-height: 1.6; }
-            </style>
-        </head>
-        <body>
-            <div class="card">
-                <h1>🦀 Welcome to Axum!</h1>
-                <p>This is an HTML response from your Axum server.</p>
-                <p>You can return full HTML pages, templates, or fragments.</p>
-            </div>
-        </body>
+        <h1>hello world></h1>
         </html>
         "#,
     )
@@ -185,11 +148,8 @@ async fn dynamic_html() -> Html<String> {
     ))
 }
 
-// ============================================================================
-// LESSON 4: Custom Response with Headers
-// ============================================================================
-
-async fn with_headers() -> (HeaderMap, &'static str) {
+// custom response dengan headers
+async fn wheader() -> (HeaderMap, &'static str) {
     let mut headers = HeaderMap::new();
     headers.insert(
         header::CONTENT_TYPE,
@@ -199,99 +159,83 @@ async fn with_headers() -> (HeaderMap, &'static str) {
         header::CACHE_CONTROL,
         HeaderValue::from_static("max-age=3600"),
     );
-    headers.insert("X-Custom-Header", HeaderValue::from_static("Hello!"));
-
+    headers.insert("X-K-Api_key", HeaderValue::from_static("kiwkiwprikitiw"));
     (headers, "Response with custom headers")
 }
 
-/// Status + headers + body
-async fn full_response() -> (StatusCode, HeaderMap, &'static str) {
+// full resp Status + headers + body
+async fn full_resp() -> (StatusCode, HeaderMap, &'static str) {
     let mut headers = HeaderMap::new();
-    headers.insert(
-        header::CONTENT_TYPE,
-        HeaderValue::from_static("text/plain"),
-    );
-    headers.insert("X-Request-Id", HeaderValue::from_static("12345"));
-
-    (StatusCode::OK, headers, "Full control over the response!")
+    headers.insert(header::CONTENT_TYPE, HeaderValue::from_static("text/plain"));
+    headers.insert("X-Req_id", HeaderValue::from_static("183810128"));
+    (StatusCode::OK, headers, "full controll response")
 }
 
-// ============================================================================
-// LESSON 5: Redirects
-// ============================================================================
-
-async fn redirect_permanent() -> Redirect {
-    Redirect::permanent("/new-location")
+// redirect
+async fn permanent_red() -> Redirect {
+    Redirect::permanent("/permanent-closed")
 }
-
-async fn redirect_temporary() -> Redirect {
-    Redirect::temporary("/temp-location")
+async fn temp_red() -> Redirect {
+    Redirect::temporary("/temp-closed")
 }
-
-async fn redirect_see_other() -> Redirect {
-    // Commonly used after form submissions
-    Redirect::to("/success")
+async fn other_red() -> Redirect {
+    Redirect::to("/succeded")
 }
-
 async fn new_location() -> &'static str {
-    "You've been redirected here!"
+    "redirected here"
 }
 
-// ============================================================================
-// LESSON 6: The IntoResponse Trait
-// ============================================================================
-
-/// Custom response type implementing IntoResponse
-struct CustomResponse {
-    message: String,
+// intoresponse trait
+// custom response type implemen IntoResponse
+struct CustomResp {
+    msg: String,
     status: StatusCode,
 }
-
-impl IntoResponse for CustomResponse {
+impl IntoResponse for CustomResp {
     fn into_response(self) -> Response {
         let body = format!(
-            r#"{{"message": "{}", "status": {}}}"#,
-            self.message,
+            r#"{{"msg": "{}", "status": "{}" }}"#,
+            self.msg,
             self.status.as_u16()
         );
-
         Response::builder()
             .status(self.status)
-            .header(header::CONTENT_TYPE, "application/json")
+            .header(header::CONTENT_TYPE, "Application/json")
             .body(Body::from(body))
-            .unwrap()
+            .unwrap_or_else(|_| {
+                (StatusCode::INTERNAL_SERVER_ERROR, "err internal conflict").into_response()
+            })
     }
 }
-
-async fn custom_response() -> CustomResponse {
-    CustomResponse {
-        message: "This is a custom response type!".to_string(),
+async fn custom_resp() -> CustomResp {
+    CustomResp {
+        msg: "pushpush".to_string(),
         status: StatusCode::OK,
     }
 }
 
-/// API Response wrapper for consistent JSON responses
+// Api Response Wrapper untuk
+// Json yang konsisten
+// mirip pydantic python
 #[derive(Serialize)]
-struct ApiResponse<T: Serialize> {
+struct ApiResp<T: Serialize> {
     success: bool,
     data: Option<T>,
     error: Option<String>,
 }
 
-impl<T: Serialize> IntoResponse for ApiResponse<T> {
+impl<T: Serialize> IntoResponse for ApiResp<T> {
     fn into_response(self) -> Response {
-        let status = if self.success {
-            StatusCode::OK
-        } else {
-            StatusCode::BAD_REQUEST
+        let status = match self.success {
+            true => StatusCode::OK,
+            false => StatusCode::BAD_REQUEST,
         };
-
         (status, Json(self)).into_response()
     }
 }
 
-async fn api_success() -> ApiResponse<User> {
-    ApiResponse {
+async fn api_success() -> ApiResp<User> {
+    ApiResp {
         success: true,
         data: Some(User {
             id: 1,
@@ -303,92 +247,60 @@ async fn api_success() -> ApiResponse<User> {
     }
 }
 
-async fn api_error() -> ApiResponse<()> {
-    ApiResponse {
+async fn api_err() -> ApiResp<()> {
+    ApiResp {
         success: false,
         data: None,
         error: Some("Something went wrong".to_string()),
     }
 }
 
-// ============================================================================
-// LESSON 7: Either/Result Response Types
-// ============================================================================
-
-/// Handlers can return Result for error handling
 async fn maybe_error() -> Result<Json<User>, (StatusCode, String)> {
-    let success = true; // Toggle this to see different responses
-
-    if success {
+    let result = true;
+    if result {
         Ok(Json(User {
             id: 1,
-            name: "Success User".to_string(),
-            email: "success@example.com".to_string(),
+            name: "success User".to_string(),
+            email: "1@email.com".to_string(),
             active: true,
         }))
     } else {
-        Err((StatusCode::NOT_FOUND, "User not found".to_string()))
+        Err((StatusCode::NOT_FOUND, "uSer not found".to_string()))
     }
 }
-
-// ============================================================================
-// MAIN
-// ============================================================================
-
 #[tokio::main]
 async fn main() {
     let app = Router::new()
         // Simple responses
-        .route("/string", get(static_string))
-        .route("/owned", get(owned_string))
-        .route("/status", get(with_status))
-        
+        .route("/string", get(stc_str))
+        .route("/owned", get(own_str))
+        .route("/status", get(w_status))
         // JSON responses
-        .route("/json/user", get(json_user))
+        .route("/json/user", get(active_user))
         .route("/json/users", get(json_users))
-        .route("/json/created", get(json_with_status))
-        
+        .route("/json/created", get(json_user_status))
         // HTML responses
-        .route("/html", get(html_page))
+        .route("/html", get(static_html))
         .route("/html/dynamic", get(dynamic_html))
-        
         // Headers
-        .route("/headers", get(with_headers))
-        .route("/full", get(full_response))
-        
+        .route("/headers", get(wheader))
+        .route("/full", get(full_resp))
         // Redirects
-        .route("/redirect/permanent", get(redirect_permanent))
-        .route("/redirect/temp", get(redirect_temporary))
-        .route("/redirect/other", get(redirect_see_other))
+        .route("/redirect/permanent", get(permanent_red))
+        .route("/redirect/temp", get(temp_red))
+        .route("/redirect/other", get(other_red))
         .route("/new-location", get(new_location))
         .route("/temp-location", get(new_location))
         .route("/success", get(|| async { "Form submitted successfully!" }))
-        
         // Custom responses
-        .route("/custom", get(custom_response))
+        .route("/custom", get(custom_resp))
         .route("/api/success", get(api_success))
-        .route("/api/error", get(api_error))
-        
+        .route("/api/error", get(api_err))
         // Result type
         .route("/maybe-error", get(maybe_error));
+    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
-        .await
-        .expect("Failed to bind");
-
-    println!("🚀 Module 04: Response Types");
-    println!("   Server running on http://localhost:3000");
-    println!();
-    println!("📝 Endpoints:");
-    println!("   GET /string            - Static string");
-    println!("   GET /json/user         - JSON user object");
-    println!("   GET /json/users        - JSON array");
-    println!("   GET /html              - Beautiful HTML page");
-    println!("   GET /headers           - Custom headers");
-    println!("   GET /redirect/permanent - Redirect example");
-    println!("   GET /custom            - Custom IntoResponse");
-    println!("   GET /api/success       - API wrapper success");
-    println!("   GET /api/error         - API wrapper error");
-
+    println!("listening on {:?}", &addr);
     axum::serve(listener, app).await.expect("Server failed");
 }

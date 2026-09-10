@@ -1,6 +1,6 @@
 [workspace]
 resolver="2"
-members=[
+members=["authentication",
     "module-01-basic",
     "module-02-routing", 
     "module-03-extractor", 
@@ -30,7 +30,7 @@ tower = { version = "0.5.3", features = ["full"] }
 tower-http = "0.7.1"
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter", "json"] }
-
+httpc-test = "0.1.10"
 
 [workspace.dependencies]
 axum = { version = "0.8.9", features = ["json", "macros", "query"] }
@@ -39,4 +39,5 @@ serde = { version = "1.0.229", features = ["derive"] }
 tokio = { version = "1.53.1", features = ["full"] }
 uuid = { version = "1.26.0", features = ["serde", "v7"] }
 tower = { version = "0.5.3", features = ["full"] }
+httpc-test = "0.1.10"
 
