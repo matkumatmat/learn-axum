@@ -39,10 +39,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 
 [[package]]
-name = "authentication"
-version = "0.1.0"
-
-[[package]]
 name = "autocfg"
 version = "1.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1034,84 +1030,18 @@ dependencies = [
 ]
 
 [[package]]
-name = "module-01-basic"
-version = "0.1.0"
-dependencies = [
- "axum",
- "json",
- "serde",
- "tokio",
- "uuid",
-]
-
-[[package]]
-name = "module-02-routing"
-version = "0.1.0"
-dependencies = [
- "axum",
- "json",
- "serde",
- "tokio",
- "tower",
- "uuid",
-]
-
-[[package]]
-name = "module-03-extractor"
-version = "0.1.0"
-dependencies = [
- "axum",
- "json",
- "serde",
- "tokio",
- "tower",
- "uuid",
-]
-
-[[package]]
-name = "module-04-response"
+name = "module-05-state"
 version = "0.1.0"
 dependencies = [
  "axum",
  "httpc-test",
  "json",
  "serde",
+ "serde_json",
  "tokio",
  "tower",
  "uuid",
 ]
-
-[[package]]
-name = "module-05-state"
-version = "0.1.0"
-
-[[package]]
-name = "module-06-middleware"
-version = "0.1.0"
-
-[[package]]
-name = "module-07-error"
-version = "0.1.0"
-
-[[package]]
-name = "module-08-database"
-version = "0.1.0"
-
-[[package]]
-name = "module-09-auth"
-version = "0.1.0"
-
-[[package]]
-name = "module-10-advanced"
-version = "0.1.0"
-
-[[package]]
-name = "module-11-testing"
-version = "0.1.0"
-
-[[package]]
-name = "module-12-prod"
-version = "0.1.0"
 
 [[package]]
 name = "multer"
@@ -1828,6 +1758,19 @@ dependencies = [
  "once_cell",
  "rustix",
  "windows-sys 0.61.2",
+]
+
+[[package]]
+name = "testing"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "httpc-test",
+ "json",
+ "serde",
+ "tokio",
+ "tower",
+ "uuid",
 ]
 
 [[package]]

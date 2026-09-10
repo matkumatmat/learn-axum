@@ -1,5 +1,5 @@
 [package]
-name = "module-05-state"
+name = "testing"
 version = "0.1.0"
 edition = "2024"
 
@@ -11,4 +11,3 @@ uuid = {workspace = true}
 tokio = {workspace = true}
 tower ={ workspace =true}
 httpc-test={ workspace =true}
-serde_json ={ workspace = true}

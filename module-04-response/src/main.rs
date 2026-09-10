@@ -5,16 +5,14 @@
 // 4. Custom Response type
 // 5. Status code and headers
 // 6. intoresponse trait
-mod tests;
 
 use axum::{
-    Router,
-    body::Body,
-    http::{HeaderMap, HeaderValue, StatusCode, header},
-    response::{Html, IntoResponse, Json, Redirect, Response},
-    routing::get,
+    Router, ServiceExt, body::Body, extract::ConnectInfo, http::{HeaderMap, HeaderValue, StatusCode, header}, response::{Html, IntoResponse, Json, Redirect, Response}, routing::get
 };
+use serde_json;
+
 use serde::Serialize;
+
 use std::net::SocketAddr;
 
 //simple response types
@@ -24,6 +22,7 @@ async fn stc_str() -> &'static str {
 
 // ngembaliin owned string
 async fn own_str() -> String {
+    println!(">> own_str");
     format!("Hello World on timestamp: {}", chrono_lite())
 }
 
@@ -209,7 +208,7 @@ impl IntoResponse for CustomResp {
 }
 async fn custom_resp() -> CustomResp {
     CustomResp {
-        msg: "pushpush".to_string(),
+        msg: "1".to_string(),
         status: StatusCode::OK,
     }
 }
@@ -268,6 +267,32 @@ async fn maybe_error() -> Result<Json<User>, (StatusCode, String)> {
         Err((StatusCode::NOT_FOUND, "uSer not found".to_string()))
     }
 }
+// async fn show_ip(ConnectInfo(addr): ConnectInfo<SocketAddr>) -> String {
+//     println!(">> request from ip: {} port: {}", addr.ip(), addr.port());
+//     // kalau mau pake tracing (udah ada deps):
+//     // tracing::info!(%addr, "incoming request");
+//     format!("IP kamu: {}", addr.ip())
+// }
+async fn show_ip_json(ConnectInfo(addr): ConnectInfo<SocketAddr>) -> Json<serde_json::Value> {
+    println!(">> hit /ip-json from {}", addr);
+    Json(serde_json::json!({ "ip": addr.ip().to_string(), "port": addr.port() }))
+}
+
+async fn show_ip(
+    ConnectInfo(addr): ConnectInfo<SocketAddr>,
+    headers:HeaderMap
+) -> String {
+    let real_ip = headers.get("x-forwarded-for")
+        .and_then(|v| v.to_str().ok())
+        .and_then(|s| s.split(',').next())
+        .map(|s|s.trim().to_owned())
+        .or_else(|| headers.get("x-real-ip").and_then(|v| v.to_str().ok()).map(|s| s.to_owned()))
+        .unwrap_or_else(|| addr.ip().to_string());
+    println!(">> raw: {} | real: {}", addr, real_ip);
+    format!("IP kamu: {} (raw: {})", real_ip, addr.ip())
+
+}
+
 #[tokio::main]
 async fn main() {
     let app = Router::new()
@@ -297,10 +322,15 @@ async fn main() {
         .route("/api/success", get(api_success))
         .route("/api/error", get(api_err))
         // Result type
-        .route("/maybe-error", get(maybe_error));
+        .route("/maybe-error", get(maybe_error))
+
+        .route("/ip", get(show_ip))
+        .route("/ip/json", get(show_ip_json));
+
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
 
     println!("listening on {:?}", &addr);
-    axum::serve(listener, app).await.expect("Server failed");
+
+    axum::serve(listener, app.into_make_service_with_connect_info::<SocketAddr>()).await.expect("Server failed ");
 }

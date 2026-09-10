@@ -1,19 +1,21 @@
 [workspace]
 resolver="2"
-members=["authentication",
-    "module-01-basic",
-    "module-02-routing", 
-    "module-03-extractor", 
-    "module-04-response", 
+members=[
+    # "authentication",
+    # "module-01-basic",
+    # "module-02-routing", 
+    # "module-03-extractor", 
+    # "module-04-response", 
     "module-05-state", 
-    "module-06-middleware", 
-    "module-07-error", 
-    "module-08-database", 
-    "module-09-auth", 
-    "module-10-advanced", 
-    "module-11-testing", 
-    "module-12-prod"
-]
+    # "module-06-middleware", 
+    # "module-07-error", 
+    # "module-08-database", 
+    # "module-09-auth", 
+    # "module-10-advanced", 
+    # "module-11-testing", 
+    # "module-12-prod",
+    "testing"]
+    
 [package]
 name = "learn-api"
 version = "0.1.0"
@@ -40,4 +42,5 @@ tokio = { version = "1.53.1", features = ["full"] }
 uuid = { version = "1.26.0", features = ["serde", "v7"] }
 tower = { version = "0.5.3", features = ["full"] }
 httpc-test = "0.1.10"
+serde_json = "1.0.151"
 
