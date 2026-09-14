@@ -11,3 +11,7 @@ uuid = {workspace = true}
 tokio = {workspace = true}
 tower ={ workspace =true}
 httpc-test={ workspace =true}
+reqwest = {workspace=true}
+axum-test = {workspace=true}
+serde_json= {workspace=true}
+

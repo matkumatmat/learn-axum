@@ -4,3 +4,11 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+axum={ workspace = true}
+serde={workspace = true}
+uuid={workspace = true}
+sqlx={workspace = true}
+thiserror={workspace = true}
+dotenvy={workspace = true}
+tokio={workspace = true}
+chrono={workspace = true}

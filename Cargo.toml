@@ -6,11 +6,11 @@ members=[
     # "module-02-routing", 
     # "module-03-extractor", 
     # "module-04-response", 
-    "module-05-state", 
+    # "module-05-state", 
     # "module-06-middleware", 
     # "module-07-error", 
     # "module-08-database", 
-    # "module-09-auth", 
+    "module-09-auth", 
     # "module-10-advanced", 
     # "module-11-testing", 
     # "module-12-prod",
@@ -22,25 +22,44 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-argon2 = "0.6.0"
+argon2 = { version = "0.6.0", features = ["password-hash", "rand_core"] }
 axum-extra = { version = "0.12.6", features = ["typed-header", "query", "multipart"] }
 chrono = { version = "0.4.45", features = ["serde"] }
-jsonwebtoken = "11.0.0"
+jsonwebtoken = { version = "11.0.0", features = ["rust_crypto"] }
 serde_html_form = "0.4.1"
 serde_json = "1.0.151"
 tower = { version = "0.5.3", features = ["full"] }
-tower-http = "0.7.1"
+tower-http = { version = "0.7.1", features = ["full"] }
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter", "json"] }
 httpc-test = "0.1.10"
+reqwest = "0.13.5"
+axum-test = "21.1.0"
+thiserror = "2.0.20"
+sqlx = { version = "0.9.0", features = ["runtime-tokio", "tls-rustls", "postgres", "uuid", "chrono"] }
+uuid = { workspace = true, features = ["serde", "v4"] }
+dotenvy = { version = "0.15.7", features = ["clap"] }
+rand = "0.10.2"
+tokio = { workspace = true, features = ["full"] }
 
 [workspace.dependencies]
 axum = { version = "0.8.9", features = ["json", "macros", "query"] }
 json = "0.12.4"
 serde = { version = "1.0.229", features = ["derive"] }
 tokio = { version = "1.53.1", features = ["full"] }
-uuid = { version = "1.26.0", features = ["serde", "v7"] }
+uuid = { version = "1.26.0", features = ["serde", "v4"] }
 tower = { version = "0.5.3", features = ["full"] }
 httpc-test = "0.1.10"
+tower-http = { version = "0.7.1", features = ["full"] }
 serde_json = "1.0.151"
-
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter", "json"] }
+reqwest = "0.12.28"
+axum-test = "21.1.0"
+thiserror = "2.0.20"
+sqlx = { version = "0.9.0", features = ["runtime-tokio", "tls-rustls", "postgres", "uuid", "chrono"] }
+dotenvy = { version = "0.15.7", features = ["clap"] }
+chrono = { version = "0.4.45", features = ["serde"] }
+argon2 = { version = "0.6.0", features =["password-hash", "rand_core"]}
+jsonwebtoken = { version = "11.0.0", features = ["rust_crypto"] }
+rand = "0.10.2"

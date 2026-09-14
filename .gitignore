@@ -1,2 +1,6 @@
 /target
 ./src
+.env
+docker-compose.yml
+.png
+refs.rs
